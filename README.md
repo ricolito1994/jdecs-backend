@@ -30,7 +30,8 @@
 ## DOCKER COMMANDS
 <ul>
     <li>to view running containers: docker ps -a</li>
-    <li>to SSH to container: docker exec -it <container_name_or_container_id> bash</li>
+    <li>to SSH to container: docker exec -it (container_name_or_container_id as seen in docker ps -a) bash</li>
+    <li>to ssh meaning you access docker container via shell command (command prompt/git bash).
     <li>to remove all docker containers: docker:docker system prune -a --volumes</li>
     <li>to install app: cd to your project folder -> docker-compose -f docker-compose.dev.yml up -d</li>
 </ul>
