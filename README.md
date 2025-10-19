@@ -16,6 +16,7 @@
 ## SETUP/INSTALLATION
 <ol>
     <li>Install docker for windows: https://docs.docker.com/desktop/setup/install/windows-install/</li>
+    <li>Make sure that you have your local MYSQL connection established before installing</li>
     <li>After installation run on your local project directory: docker-compose -f docker-compose.dev.yml up -d</li>
     <li>Wait installation to finish - view in your docker desktop - you should see: </li>
     <li>2025-10-19 08:03:32,052 INFO success: php-fpm entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)</li>
