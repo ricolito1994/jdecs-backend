@@ -46,4 +46,11 @@
     <li>To undo a seeder: php artisan seed</li>
 </ul>
 
+# ROUTE CLEAR
+<p>
+    if you added a new route via <em>web.php</em>, make sure you ran <b>php artisan route:clear</b>
+    to the app container to register the newly added route.
+</p>
+
+
 
