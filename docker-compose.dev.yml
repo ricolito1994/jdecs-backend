@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+  jdecs-app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dev
+    restart: unless-stopped
+    volumes:
+      - ./:/var/www
+      - vendor_data:/var/www/vendor   # ⬅️ vendor handled inside Docker
+    environment:
+      APP_ENV: development
+      SCHEDULER: false
+    networks:
+      - jdecs
+
+  jdecs-scheduler:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dev
+    restart: unless-stopped
+    volumes:
+      - ./:/var/www
+      - vendor_data:/var/www/vendor   # ⬅️ share vendor volume
+    environment:
+      APP_ENV: development
+      SCHEDULER: true
+    networks:
+      - jdecs
+
+  nginx:
+    image: nginx:stable-alpine
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./public:/var/www/public
+      - ./docker/conf/nginx.prod.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - jdecs-app
+    networks:
+      - jdecs
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    networks:
+      - jdecs
+
+networks:
+  jdecs:
+    driver: bridge
+
+volumes:
+  redis_data:
+  vendor_data:  
