@@ -22,3 +22,7 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Ignore Supervisor runtime files
+supervisord.pid
+supervisord.sock

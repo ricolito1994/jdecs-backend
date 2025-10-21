@@ -5,6 +5,8 @@ cd /var/www
 
 echo "⚙️  Environment: $APP_ENV"
 
+echo " Current User: $(whoami)"
+
 # 🧹 Ensure vendor is handled inside Docker, not host
 # if [ -d "/var/www/vendor" ] && [ ! -L "/var/www/vendor" ]; then
 #    echo "🧹 Removing host vendor/ directory to use container volume..."
@@ -75,14 +77,25 @@ php artisan key:generate --force
 php artisan jwt:secret --force
 php artisan config:clear
 php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+# php artisan route:cache
+php artisan route:clear
+php artisan cache:clear
+# php artisan view:cache
+php artisan view:clear
 
 echo "📂 Running migrations..."
 php artisan migrate --force
 
-echo "🌱 Seeding database with initial user data..."
-php artisan db:seed --class=UserSeeder --force
+echo "🌱 Checking if database seeding is needed..."
+
+# Check if users table already has records
+if php artisan tinker --execute="echo \App\Models\User::count();" | grep -q '^[1-9][0-9]*$'; then
+    echo "✅ Users already exist — skipping seeding."
+else
+    echo "🌱 No users found — running UserSeeder..."
+    php artisan db:seed --class=UserSeeder --force
+fi
+
 
 echo "✅ [jdecs-entrypoint] Init complete, starting Supervisor..."
 exec /usr/bin/supervisord -c /etc/supervisord.conf
