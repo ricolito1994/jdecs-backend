@@ -18,21 +18,17 @@ COPY docker/php.dev.ini /usr/local/etc/php/conf.d/php.ini
 # Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Create dev user (match host UID for file permissions)
-RUN useradd -G www-data,root -u 1000 -d /home/jdecs jdecs \
-    && mkdir -p /home/jdecs/.composer \
-    && chown -R jdecs:jdecs /home/jdecs
-
+# Work directory
 WORKDIR /var/www
 
-# Copy composer files first (better caching for deps)
-COPY --chown=jdecs:jdecs composer.json composer.lock ./
+# Copy composer files first (for caching)
+COPY composer.json composer.lock ./
 
-# Install ALL dependencies (including dev)
-RUN composer install --no-scripts --prefer-dist
+# Install dependencies (as root, no users involved)
+RUN composer install --no-scripts --prefer-dist --no-interaction
 
-# Copy the full app (but in dev, code will be volume-mounted anyway)
-COPY --chown=jdecs:jdecs . .
+# Copy full app
+COPY . .
 
 # Supervisor (process manager)
 COPY docker/conf/supervisord.conf /etc/supervisord.conf
@@ -41,6 +37,7 @@ COPY docker/conf/supervisord.conf /etc/supervisord.conf
 COPY docker/entrypoint.dev.sh /usr/local/bin/entrypoint.dev.sh
 RUN chmod +x /usr/local/bin/entrypoint.dev.sh
 
-USER jdecs
+# Always run as root
+USER root
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.dev.sh"]
