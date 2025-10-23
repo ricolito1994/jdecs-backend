@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('position')->nullable();
             $table->string('designation')->nullable();
             $table->string('username')->unique()->nullable();
-            $table->string('email')->unique()->nullable();
+            # $table->string('email')->unique()->nullable();
             $table->boolean('is_active')->nullable()->default(true);
             $table->softDeletes();
         });
