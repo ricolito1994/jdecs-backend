@@ -7,6 +7,8 @@ echo "⚙️  Environment: $APP_ENV"
 
 echo " Current User: $(whoami)"
 
+echo "Running build ....";
+
 # 🧹 Ensure vendor is handled inside Docker, not host
 # if [ -d "/var/www/vendor" ] && [ ! -L "/var/www/vendor" ]; then
 #    echo "🧹 Removing host vendor/ directory to use container volume..."
@@ -75,13 +77,13 @@ fi
 echo "🛠️  Setting up Laravel..."
 php artisan key:generate --force
 php artisan jwt:secret --force
-php artisan config:clear
-php artisan config:cache
+# php artisan config:clear
+# php artisan config:cache
 # php artisan route:cache
-php artisan route:clear
-php artisan cache:clear
+# php artisan route:clear
+# php artisan cache:clear
 # php artisan view:cache
-php artisan view:clear
+# php artisan view:clear
 
 echo "📂 Running migrations..."
 php artisan migrate --force
@@ -95,6 +97,11 @@ else
     echo "🌱 No users found — running UserSeeder..."
     php artisan db:seed --class=UserSeeder --force
 fi
+
+php artisan config:clear
+php artisan cache:clear
+php artisan route:clear
+php artisan view:clear
 
 
 echo "✅ [jdecs-entrypoint] Init complete, starting Supervisor..."
